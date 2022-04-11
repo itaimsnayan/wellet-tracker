@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useEffect, useState } from "react";
+import IncomeForm from "./components/Income/IncomeForm";
+import IncomeList from "./components/Income/IncomeList";
 
 function App() {
+  const [screen, setScreen] = useState("list");
+  const [selectedIncome, setSelectedIncome] = useState({});
+
+  useEffect(() => {
+    if (selectedIncome && selectedIncome._id) setScreen("form");
+  }, [selectedIncome]);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>
+        {screen === "form" && (
+          <IncomeForm
+            title={selectedIncome._id ? "Update" : "Add"}
+            selectedIncome={selectedIncome}
+            setScreen={setScreen}
+          />
+        )}
+      </div>
+      <div>
+        {screen === "list" && (
+          <IncomeList
+            setScreen={setScreen}
+            setSelectedIncome={setSelectedIncome}
+          />
+        )}
+      </div>
     </div>
   );
 }

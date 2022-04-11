@@ -1,28 +1,26 @@
 import express from "express";
-import env from "dotenv";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+import bodyParser from "body-parser";
+import incomeRoute from "./incomeRoute";
 import cors from "cors";
-import userRoute from "./routes/userRoute";
-import fileRoute from "./routes/fileRoute";
-var bodyParser = require("body-parser");
 
-env.config();
+dotenv.config();
 const app = express();
-app.use(express.static('public'))
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+
 app.use(cors());
+const PORT = 5000;
 
-app.use("/api/user", userRoute);
-app.use("/api/file", fileRoute);
 mongoose
-  .connect(process.env.MONGODB_URL)
-  .then(() => console.log("connected to database."))
-  .catch((error) => console.log("error in connecting to dataabase: ", error));
+  .connect(process.env.MONGODBURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to Database");
+  });
 
-const PORT = process.env.PORT;
-app.listen(PORT, () => console.log(`listening on PORT ${PORT}`));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use("/api/income", incomeRoute);
+app.listen(5000, () => console.log(`listening on PORT ${PORT}`));
